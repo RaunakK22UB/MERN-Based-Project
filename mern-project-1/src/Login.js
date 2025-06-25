@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import {GoogleOAuthProvider,GoogleLogin} from '@react-oauth/google';
-import {useNavigate} from "react-router-dom";
+
 
 function Login({updateUserDetails}) {
-    const navigate = useNavigate();
+  
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -84,7 +84,7 @@ function Login({updateUserDetails}) {
                 withCredentials: true
             });
             updateUserDetails(response.data.user);
-             navigate("/dashboard");
+            //  navigate("/dashboard");
 
         }catch(e){
             console.log(e);
