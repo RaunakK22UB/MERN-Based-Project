@@ -2,6 +2,7 @@
 import {useNavigate} from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { serverEndpoint } from "./config";
 
 function Register() {
     const navigate = useNavigate();
@@ -42,13 +43,13 @@ function Register() {
                 name: formData.name
             };
             try {
-                const response = await axios.post("http://localhost:5000/auth/register", body);
+                const response = await axios.post(`${serverEndpoint}/auth/register`, body);
                 setMessage(response.data.message);
                 setFormData({ username: '', password: '', name: '' });
                 navigate("/dashboard");
             } catch (error) {
                 console.log(error);
-                setMessage("Registration failed");
+                setMessage(`Hey ${formData.name} Registration Failed, Email Id Already Exists!!,Please Tryagain!!`);
             }
         }
     };

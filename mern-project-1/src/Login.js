@@ -1,9 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 import {GoogleOAuthProvider,GoogleLogin} from '@react-oauth/google';
+import { serverEndpoint } from "./config";
+import { useDispatch } from "react-redux";
+import { SET_USER } from "./redux/user/actions";
 
+//function Login({updateUserDetails}) {  we will remove this prop as well 
+function Login() {
 
-function Login({updateUserDetails}) {
+    const dispatch = useDispatch();
   
     const [formData, setFormData] = useState({
         username: '',
@@ -60,14 +65,21 @@ function Login({updateUserDetails}) {
                 username: formData.username,
                 password: formData.password 
             };
+        
             const config={
                 withCredentials: true // this is important to send cookies with the request  // this telling the browser to include cookies in the request
             };
              try{
-                const response = await axios.post('http://localhost:5000/auth/login',body,config); // This make sure that cookies are sent with the request // response varible will contain the response from the server, same response which we have seen in postman
+                const response = await axios.post(`${serverEndpoint}/auth/login`,body,config); // This make sure that cookies are sent with the request // response varible will contain the response from the server, same response which we have seen in postman
           
-             updateUserDetails(response.data.user); // update the user details in the App component
-               console.log(response.data);
+            //[...........we dont need this again use dispatch]  updateUserDetails(response.data.user); // update the user details in the App component
+            //    console.log(response.data);
+                                 
+            dispatch({
+            type:  SET_USER,
+            payload: response.data.user
+            });
+
             }catch(error) {
               console.log(error);
               setErrors({message: 'something went wrong'});
@@ -78,13 +90,22 @@ function Login({updateUserDetails}) {
     const handleGoogleSuccess = async (authResponse) =>{
 
         try{
-            const response=await axios.post('http://localhost:5000/auth/google-auth',{
+            const response=await axios.post(`${serverEndpoint}/auth/google-auth`,{
                 idToken : authResponse.credential
             },{
                 withCredentials: true
             });
-            updateUserDetails(response.data.user);
+            // updateUserDetails(response.data.user); .... here as well use REDUX dispatch
             //  navigate("/dashboard");
+
+            
+           dispatch({
+           type: SET_USER,
+           payload: response.data.user
+           
+        });
+
+
 
         }catch(e){
             console.log(e);
@@ -117,7 +138,8 @@ function Login({updateUserDetails}) {
                     <button>Submit</button>
                 </div>
             </form>
-            <h1>OR</h1>
+            <br></br>
+            <h1>Login With Google</h1>
             <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
                 <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError}/>
             </GoogleOAuthProvider>

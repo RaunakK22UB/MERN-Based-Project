@@ -9,13 +9,21 @@ import Error from "./pages/Error";
 import Dashboard from "./pages/Dashboard";
 import Register from "./Register";
 import axios from "axios";
+import { serverEndpoint } from "./config";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_USER } from "./redux/user/actions";
 
 function App() {
-  const [userDetails, setUserDetails] = useState(null);
-// this is example of lifting state up
-  const updateUserDetails = (updatedUserDetails) => {
-    setUserDetails(updatedUserDetails);
-  };
+
+
+  // to iuse redux we will remove this userdetails
+  // const [userDetails, setUserDetails] = useState(null);
+  const dispatch = useDispatch();
+  const userDetails = useSelector((state)=>state.userDetails);
+// this is example of lifting state up  ............... we dont need this more we will use redux dispatcher
+  // const updateUserDetails = (updatedUserDetails) => {
+  //   setUserDetails(updatedUserDetails);
+  // };
 
 
   //   const isUserLoggedIn = async () => {
@@ -32,12 +40,16 @@ function App() {
 //   };
   const isUserLoggedIn = async ()=>{
     try{
-    const response = await axios.post('http://localhost:5000/auth/isUserLoggedIn', {}, {
+    const response = await axios.post(`${serverEndpoint}/auth/isUserLoggedIn`, {}, {
       withCredentials: true // this is important to send cookies with the request
      
   });
-  updateUserDetails(response.data.user);
-}catch(e){
+  // updateUserDetails(response.data.user);  .................did not need more use dispatch of redux
+   dispatch({
+        type: SET_USER,
+        payload:response.data.user
+   });
+ }catch(e){
   console.log(e);
 }
   };
@@ -68,7 +80,8 @@ function App() {
             <Navigate to="/dashboard" />
           ) : (
             <AppLayout>
-              <Login updateUserDetails={updateUserDetails} />
+              {/* <Login updateUserDetails={updateUserDetails} /> */}
+               <Login  />
             </AppLayout>
           )
         }
@@ -78,7 +91,8 @@ function App() {
         path="/dashboard"
         element={
           userDetails ? (
-            <Dashboard updateUserDetails={updateUserDetails} />
+            // <Dashboard updateUserDetails={updateUserDetails} />
+             <Dashboard  />
           ) : (
             <Navigate to="/login" />
           )
@@ -90,7 +104,8 @@ function App() {
         path="/logout"
         element={
           userDetails ? (
-            <Logout updateUserDetails={updateUserDetails} />
+            // <Logout updateUserDetails={updateUserDetails} />
+            <Logout />
           ) : (
             <Navigate to="/login" />
           )

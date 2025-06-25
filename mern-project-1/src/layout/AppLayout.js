@@ -7,6 +7,19 @@ function AppLayout({ children }) {
         <>
             <Header />
             { children }
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            
             <Footer />
         </>
     );
