@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./src/routes/authRoutes');
 const cookieParser = require('cookie-parser'); // to parse cookies from request
 const cors = require('cors'); // to handle CORS issues
+const linksRoutes = require('./src/routes/linksRoutes');
 
 mongoose.connect(process.env.MONGO_URL, )
 .then(()=> console.log('MongoDB is Connected Putar!!'))
@@ -17,6 +18,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use('/auth',authRoutes); 
+app.use('/links', linksRoutes);
 const PORT=5000;
 app.listen(PORT,(err)=>{
     if(err){
